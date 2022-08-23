@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#This script installs and configures HAproxy on the loadbalancer server lb-01
+sudo apt-get -y update
+sudo apt-get -y install haproxy
+sudo sed -i "s/ENABLED=0/ENABLED=1" /etc/default/haproxy
+sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.original
+sudo sed -i "$ a\listen 3998-lb-01\n\tbind *:80\n\tmode http\n\tbalance roundrobin\n\toption httpclose\n\toption forwardfor\n\tserver 3998-web-01 54.198.231.44:80 check\n\tserver 3998-web-02 18.215.173.73:80 check" /etc/haproxy/haproxy.cfg
+sudo service haproxy start
